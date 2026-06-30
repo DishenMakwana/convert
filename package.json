@@ -1,0 +1,35 @@
+{
+  "name": "convert",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "jszip": "^3.10.1",
+    "lucide-react": "^1.22.0",
+    "motion": "^12.42.1",
+    "next": "^16.2.9",
+    "postcss": "^8.5.16",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.7",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "eslint": "^9.30.0",
+    "eslint-config-next": "^16.2.9",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "yarn@1.22.22",
+  "volta": {
+    "node": "24.18.0",
+    "yarn": "1.22.22"
+  }
+}
