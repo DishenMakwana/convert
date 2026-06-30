@@ -15,7 +15,8 @@ export type ConverterKind =
   | "compress-image"
   | "resize-image"
   | "remove-background"
-  | "rotate-image";
+  | "rotate-image"
+  | "jpg-pdf";
 
 export interface ConvertedFile {
   source: File;

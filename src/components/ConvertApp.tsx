@@ -36,6 +36,7 @@ import PngToWebpConverter from "./converters/PngToWebpConverter";
 import RemoveBackgroundTool from "./converters/RemoveBackgroundTool";
 import ResizeImageTool from "./converters/ResizeImageTool";
 import RotateImageTool from "./converters/RotateImageTool";
+import JpgToPdfConverter from "./converters/JpgToPdfConverter";
 import type { ConverterConfig } from "./converters/shared/types";
 
 /* ═══════════════════ Converter Registry ═══════════════════ */
@@ -209,6 +210,19 @@ const converters: ConverterConfig[] = [
     accept: ".pdf",
     outputExt: "pptx",
     multiple: true
+  },
+  {
+    kind: "jpg-pdf",
+    title: "Image to PDF",
+    description: "Convert JPG, JPEG, PNG, and HEIC images to a single PDF document.",
+    category: "Convert",
+    accent: "bg-red-500",
+    Icon: FileText,
+    fromLabel: "Image",
+    toLabel: "PDF",
+    accept: ".jpg,.jpeg,.png,.heic",
+    outputExt: "pdf",
+    multiple: true
   }
 ];
 
@@ -253,6 +267,8 @@ function renderConverter(config: ConverterConfig): React.ReactElement {
       return <RemoveBackgroundTool config={config} />;
     case "rotate-image":
       return <RotateImageTool config={config} />;
+    case "jpg-pdf":
+      return <JpgToPdfConverter config={config} />;
   }
 }
 
