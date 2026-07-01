@@ -1,12 +1,10 @@
 "use client";
 
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { removeBackgroundRasterImage, downloadBlob, generateSampleFile } from "@/components/converters/shared/converterUtils";
 import type { ConverterComponentProps } from "@/components/converters/shared/types";
-import { ArrowLeft, Check, Download, FileUp, Loader2, RefreshCcw, Scissors, Sparkles, Trash2, UploadCloud, X } from "lucide-react";
+import { Check, Download, Loader2, RefreshCcw, Scissors, Trash2, UploadCloud } from "lucide-react";
 import { motion } from "motion/react";
-
-type ToleranceMode = "low" | "standard" | "high" | "custom";
 
 function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactElement {
   const [file, setFile] = useState<File | null>(null);
@@ -14,8 +12,6 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
   const [removedBlob, setRemovedBlob] = useState<Blob | null>(null);
   const [removedBgUrl, setRemovedBgUrl] = useState<string>("");
   
-  const [mode, setMode] = useState<ToleranceMode>("standard");
-  const [tolerance, setTolerance] = useState(75);
   const [processing, setProcessing] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
@@ -23,8 +19,6 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
   const [sliderPos, setSliderPos] = useState(50); // % from left to right
 
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const activeTolerance = mode === "low" ? 30 : mode === "standard" ? 75 : mode === "high" ? 150 : tolerance;
 
   // Cleanup object URL on unmount/reset
   useEffect(() => {
@@ -83,8 +77,6 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
       URL.revokeObjectURL(removedBgUrl);
       setRemovedBgUrl("");
     }
-    setMode("standard");
-    setTolerance(75);
     setSliderPos(50);
     setProcessing(false);
   };
@@ -93,7 +85,7 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
     if (!file) return;
     setProcessing(true);
     try {
-      const blob = await removeBackgroundRasterImage(file, activeTolerance);
+      const blob = await removeBackgroundRasterImage(file);
       setRemovedBlob(blob);
       const url = URL.createObjectURL(blob);
       setRemovedBgUrl(url);
@@ -213,7 +205,7 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
             <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
               {removedBgUrl
                 ? "Cutout complete! Drag comparison slider to inspect cutout detail."
-                : "Select threshold tolerance match to proceed."}
+              : "Upload an image and create an AI cutout."}
             </p>
           </div>
         </div>
@@ -230,11 +222,11 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         
         {/* Left Column: Visual Canvas Workspace */}
-        <div className="flex items-center justify-center rounded-2xl border border-white/[.06] bg-black/40 p-4 sm:p-6 min-h-[300px] sm:min-h-[460px]">
+        <div className="flex items-center justify-center rounded-2xl border border-white/[.06] bg-[#0b0e18]/80 p-4 shadow-inner shadow-black/30 sm:min-h-[460px] sm:p-6 min-h-[300px]">
           {removedBgUrl ? (
             /* COMPARISON SLIDER VIEW */
             <div
-              className="relative overflow-hidden select-none select-none max-w-full"
+              className="relative max-w-full select-none overflow-hidden rounded-xl bg-white shadow-2xl shadow-black/30"
               ref={containerRef}
               style={{ width: "fit-content" }}
             >
@@ -251,10 +243,10 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
                 style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
               >
                 {/* Checkerboard transparency grid background */}
-                <div className="absolute inset-0 opacity-20" style={{
-                  backgroundImage: 'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
-                  backgroundSize: '16px 16px',
-                  backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px'
+                <div className="absolute inset-0" style={{
+                  backgroundColor: "#ffffff",
+                  backgroundImage: "conic-gradient(#ffffff 25%, #e2e8f0 0 50%, #ffffff 0 75%, #e2e8f0 0)",
+                  backgroundSize: "20px 20px"
                 }} />
                 <img
                   alt="Transparent cutout"
@@ -294,36 +286,10 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
               /* PANEL A: SETTINGS FORM (BEFORE CROP) */
               <>
                 <h3 className="text-sm font-extrabold text-white pb-2 border-b border-white/[.06]">Remove background</h3>
-                
-                {/* Mode Selector */}
-                <div className="grid grid-cols-4 gap-0.5 rounded-xl bg-zinc-950 p-1">
-                  {(["low", "standard", "high", "custom"] as ToleranceMode[]).map((m) => (
-                    <button
-                      className={`rounded-lg py-1 px-1 text-[10px] font-bold transition-all ${
-                        mode === m ? "btn-gradient shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-                      }`}
-                      key={m}
-                      onClick={() => setMode(m)}
-                      type="button"
-                    >
-                      {m === "low" ? "Low" : m === "standard" ? "Mid" : m === "high" ? "High" : "Custom"}
-                    </button>
-                  ))}
-                </div>
-
-                {mode === "custom" && (
-                  <label className="grid w-full gap-2 text-xs font-semibold text-zinc-400">
-                    <div className="flex items-center justify-between">
-                      <span>Color Tolerance</span>
-                      <span className="rounded bg-white/[.06] px-1.5 py-0.5 text-xs font-bold gradient-text">{tolerance}</span>
-                    </div>
-                    <input max={240} min={10} onChange={(e) => setTolerance(Number(e.target.value))} type="range" value={tolerance} />
-                  </label>
-                )}
 
                 {/* Info Text */}
                 <div className="text-[11px] leading-relaxed text-zinc-500">
-                  Select threshold color matcher levels. Higher levels remove larger color ranges.
+                  AI matting removes complex backgrounds and exports a transparent PNG.
                 </div>
 
                 {/* Remove Background Button */}
@@ -350,7 +316,7 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
                   </div>
                   <h3 className="text-base font-extrabold text-white">Cutout Created!</h3>
                   <p className="mt-1 text-xs text-zinc-500 leading-normal">
-                    The background was successfully color-keyed and made fully transparent.
+                    The background was removed and made transparent.
                   </p>
                 </div>
 
@@ -367,7 +333,11 @@ function RemoveBackgroundTool({ config }: ConverterComponentProps): React.ReactE
                 {/* Reset Option */}
                 <button
                   className="btn-ghost w-full py-3 flex items-center justify-center gap-2 text-xs"
-                  onClick={() => setRemovedBgUrl("")} // return to editor panel
+                  onClick={() => {
+                    if (removedBgUrl) URL.revokeObjectURL(removedBgUrl);
+                    setRemovedBgUrl("");
+                    setRemovedBlob(null);
+                  }}
                   type="button"
                 >
                   <RefreshCcw className="h-3 w-3" />

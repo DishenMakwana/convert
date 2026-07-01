@@ -241,27 +241,21 @@ export async function rotateRasterImage(file: File, degrees: number): Promise<Bl
   return canvasToBlob(canvas, "image/png");
 }
 
-export async function removeBackgroundRasterImage(file: File, tolerance: number): Promise<Blob> {
-  const img = await loadImage(file);
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+export async function removeBackgroundRasterImage(file: File): Promise<Blob> {
+  const formData = new FormData();
+  formData.append("image", file);
 
-  if (!ctx) throw new Error("Canvas is unavailable");
+  const response = await fetch("/api/remove-background", {
+    method: "POST",
+    body: formData
+  });
 
-  ctx.drawImage(img, 0, 0);
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
-  const target = [data[0], data[1], data[2]];
-
-  for (let index = 0; index < data.length; index += 4) {
-    const distance = Math.abs(data[index] - target[0]) + Math.abs(data[index + 1] - target[1]) + Math.abs(data[index + 2] - target[2]);
-    if (distance <= tolerance) data[index + 3] = 0;
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Background removal failed");
   }
 
-  ctx.putImageData(imageData, 0, 0);
-  return canvasToBlob(canvas, "image/png");
+  return response.blob();
 }
 
 export async function convertPngToIco(file: File): Promise<Blob> {
@@ -357,4 +351,3 @@ export function generateSampleFile(accept: string, title: string): Promise<File>
     }
   });
 }
-

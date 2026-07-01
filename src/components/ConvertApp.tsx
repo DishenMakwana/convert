@@ -110,7 +110,7 @@ const converters: ConverterConfig[] = [
   {
     kind: "remove-background",
     title: "Remove Background",
-    description: "Cut out simple backgrounds from JPG and PNG images using local color-key removal.",
+    description: "Remove complex image backgrounds with Node-based AI matting.",
     category: "Edit",
     accent: "bg-lime-500",
     Icon: Scissors,
