@@ -190,7 +190,7 @@ const converters: ConverterConfig[] = [
   {
     kind: "pdf-docx",
     title: "PDF to DOCX",
-    description: "Generate DOCX placeholders from PDF files for bulk workflow demos.",
+    description: "Convert PDFs with selectable text into editable Word files.",
     category: "Convert",
     accent: "bg-violet-500",
     Icon: FileArchive,

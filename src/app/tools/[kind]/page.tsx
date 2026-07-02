@@ -47,8 +47,8 @@ const tools: Record<string, { title: string; description: string }> = {
     description: "Convert Word DOCX files to PDF placeholders for quick export workflows."
   },
   "pdf-docx": {
-    title: "PDF to DOCX Converter",
-    description: "Convert PDF files to DOCX placeholders for document workflow demos."
+    title: "PDF to DOCX Converter (No OCR)",
+    description: "Convert PDFs with selectable text into editable Word documents online."
   },
   "pdf-pptx": {
     title: "PDF to PPTX Converter",
