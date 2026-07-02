@@ -37,6 +37,7 @@ import RemoveBackgroundTool from "./converters/RemoveBackgroundTool";
 import ResizeImageTool from "./converters/ResizeImageTool";
 import RotateImageTool from "./converters/RotateImageTool";
 import JpgToPdfConverter from "./converters/JpgToPdfConverter";
+import MergePdfTool from "./converters/MergePdfTool";
 import type { ConverterConfig } from "./converters/shared/types";
 
 /* ═══════════════════ Converter Registry ═══════════════════ */
@@ -223,6 +224,19 @@ const converters: ConverterConfig[] = [
     accept: ".jpg,.jpeg,.png,.heic",
     outputExt: "pdf",
     multiple: true
+  },
+  {
+    kind: "merge-pdf",
+    title: "Merge PDF",
+    description: "Combine multiple PDF files into a single PDF document quickly and securely.",
+    category: "Edit",
+    accent: "bg-rose-600",
+    Icon: FileText,
+    fromLabel: "Merge",
+    toLabel: "PDF",
+    accept: ".pdf",
+    outputExt: "pdf",
+    multiple: true
   }
 ];
 
@@ -269,6 +283,8 @@ function renderConverter(config: ConverterConfig): React.ReactElement {
       return <RotateImageTool config={config} />;
     case "jpg-pdf":
       return <JpgToPdfConverter config={config} />;
+    case "merge-pdf":
+      return <MergePdfTool config={config} />;
   }
 }
 

@@ -57,6 +57,10 @@ const tools: Record<string, { title: string; description: string }> = {
   "jpg-pdf": {
     title: "Image to PDF Converter",
     description: "Convert JPG, JPEG, PNG, and HEIC images into a single PDF document."
+  },
+  "merge-pdf": {
+    title: "Merge PDF Online",
+    description: "Combine and merge multiple PDF documents into a single PDF file online."
   }
 };
 
