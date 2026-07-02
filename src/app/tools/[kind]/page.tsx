@@ -61,6 +61,10 @@ const tools: Record<string, { title: string; description: string }> = {
   "merge-pdf": {
     title: "Merge PDF Online",
     description: "Combine and merge multiple PDF documents into a single PDF file online."
+  },
+  "compress-pdf": {
+    title: "Compress PDF Online",
+    description: "Reduce the file size of your PDF documents while maintaining the best possible quality."
   }
 };
 

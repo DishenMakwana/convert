@@ -38,6 +38,7 @@ import ResizeImageTool from "./converters/ResizeImageTool";
 import RotateImageTool from "./converters/RotateImageTool";
 import JpgToPdfConverter from "./converters/JpgToPdfConverter";
 import MergePdfTool from "./converters/MergePdfTool";
+import CompressPdfTool from "./converters/CompressPdfTool";
 import type { ConverterConfig } from "./converters/shared/types";
 
 /* ═══════════════════ Converter Registry ═══════════════════ */
@@ -237,6 +238,19 @@ const converters: ConverterConfig[] = [
     accept: ".pdf",
     outputExt: "pdf",
     multiple: true
+  },
+  {
+    kind: "compress-pdf",
+    title: "Compress PDF",
+    description: "Reduce the file size of your PDF documents while maintaining visual quality.",
+    category: "Optimize",
+    accent: "bg-red-500",
+    Icon: Shrink,
+    fromLabel: "Compress",
+    toLabel: "PDF",
+    accept: ".pdf",
+    outputExt: "pdf",
+    multiple: true
   }
 ];
 
@@ -285,6 +299,8 @@ function renderConverter(config: ConverterConfig): React.ReactElement {
       return <JpgToPdfConverter config={config} />;
     case "merge-pdf":
       return <MergePdfTool config={config} />;
+    case "compress-pdf":
+      return <CompressPdfTool config={config} />;
   }
 }
 
